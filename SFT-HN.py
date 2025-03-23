@@ -257,7 +257,7 @@ class MT_CNN(nn.Module):
         nn.init.uniform_(self.w, -0.1, 0.1)
 
     def forward(self, x):
-        # (128, 6, 8, 9 ,4)
+        # (128, 5, 8, 9 ,4)
         x = self.base_network(x)
         x = x.view(x.size(0), 4, 150)  # Assumes batch size is a multiple of 6
         # x, _ = self.lstm(x)
@@ -265,6 +265,16 @@ class MT_CNN(nn.Module):
         M = self.tanh1(x)
         alpha = F.softmax(torch.matmul(M, self.w), dim=1)
         out = x * alpha
+        out = torch.sum(out, 1)  # [batch_size,hidden_size * 2]
+        out = self.tanh2(out)
+        t = self.out(out)
+        return t
+
+
+model = MT_CNN((8, 9, 5), 2).cuda()
+input = torch.randn((2, 4, 5, 8, 9)).cuda()
+out = model(input)
+
         out = torch.sum(out, 1)  # [batch_size,hidden_size * 2]
         out = self.tanh2(out)
         t = self.out(out)
