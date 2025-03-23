@@ -275,8 +275,4 @@ model = MT_CNN((8, 9, 5), 2).cuda()
 input = torch.randn((2, 4, 5, 8, 9)).cuda()
 out = model(input)
 
-        out = torch.sum(out, 1)  # [batch_size,hidden_size * 2]
-        out = self.tanh2(out)
-        t = self.out(out)
-        return t
 
